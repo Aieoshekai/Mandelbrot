@@ -20,7 +20,7 @@ body {
 </style>
 
 <h1>Trey built this fractal browser.</h1>
-<p>Tt draws a graphical representation of the mandelbrot set, and paints the canvas pretty colors depending on pixel distance relative to the mandelbrot numbers. </p>
+<p>It draws a graphical representation of the mandelbrot set, and paints the canvas pretty colors depending on pixel distance relative to the mandelbrot numbers. </p>
 <p>Click to drag a box on the canvas to zoom in closer. (The the zoomed area will be stretched to fit the proportions of the canvas.)</p>
 <p>There's also commented code allowing click-to-draw with the mouse.  Currently conflicts with zoom function.</p>
 
@@ -30,19 +30,16 @@ myCanvas1 = document.getElementById('myCanvas1');
 myCanvas2 = document.getElementById('myCanvas2');
 var ctx1 = myCanvas1.getContext('2d');
 var ctx2 = myCanvas2.getContext('2d');
-
-
-//callback function to pick a new color each time its called.  To be used in pixelPainter.  
+  
 const nextColor = (r, g, b, a = 255) => {
   ctx1.fillStyle = 'rgba('+r+', '+g+', '+b+', '+(a/255)+')';
 }
 
 
 const pixelPainter = (canvas, x, y) => {
-
+  
   for (let x = 0; x < canvas.width; x++) {
     for (let y = 0; y < canvas.width; y++) {
-
       	let r = (x / (canvas.width / 255));
       	let g = (y / (canvas.width / 255));
       	let b = ((10 / ((2 * x) / canvas.width)) + (10 / ((2 * y) / canvas.height)));
@@ -68,16 +65,15 @@ const paintItLavender = (x, y) => {
 }
 
 const paintItPurple = (x, y) => {
-	ctx1.fillStyle = '#7D4BFF'; //#6632FF  //7D4BFF
+	ctx1.fillStyle = '#7D4BFF';
   ctx1.fillRect(x, y, 1, 1);
 }
 
-const mandelbrotColors = ['#FFFFFF', '#05FAF2', '#FF00FF', '#5B2BFD', '#352EAE','#9999ff', '#000000'];
+const mandelbrotColors = ['#FFFFFF', '#05FAF2', '#FF00FF', '#5B2BFD', '#352EAE', '#9999ff', '#000000'];
 
 
-
-const blendWeight = (lengthSq, weight = 32) => { //will set this somewhere between 4 and 34.269025436587455.  Perhaps later I'll add a UI element to allow the user to set weight.
-	return (lengthSq / weight);
+const blendWeight = (lengthSq, weight = 32) => { 
+	return (lengthSq / weight); 
 }
   
 const backToHex = (rgb1, rgb2, lengthSq) => {
@@ -85,11 +81,9 @@ const backToHex = (rgb1, rgb2, lengthSq) => {
   if (blendedRgb.length < 2) {
     blendedRgb = "0" + blendedRgb;
   }
-
   return blendedRgb;
   
 }
-
 
 
 const colorBlender = (i, lengthSq) => { 
@@ -103,16 +97,13 @@ const colorBlender = (i, lengthSq) => {
   	let color2Blue = parseInt(mandelbrotColors[(i % 7) + 1].slice(5),16);
   
   	let blendedRed = backToHex(color1Red, color2Red, lengthSq);
-
   
   	let blendedGreen = backToHex(color1Green, color2Green, lengthSq);
-
   
  		let blendedBlue = backToHex(color1Blue, color2Blue, lengthSq);
-
   
   	let blendedColor = `#${blendedRed}${blendedGreen}${blendedBlue}`;
- 
+  	
   	return blendedColor;
 }
 
@@ -134,18 +125,15 @@ const linearInterpolate = (color1, color2, ratio) => {
   return `rgb(${r},${g},${b})`;
 }
 
-//With maxIterations = 1000 and escape radius at 4 (i.e., lengthSq <= 4), iMax = 993, and lengthSqMax = 34.269025436587455.  iSmoothMax is also ~993 (992.1785995158948).  Cool!
 const paintItBrot = (x, y, i, lengthSq) => {
  	iSmooth = (i + 1 - Math.log(Math.log(Math.abs(lengthSq)))/Math.log(2));
  
-
   ctx1.fillStyle = interpolation(Math.min((iSmooth/50), 1)*(mandelPalette.length-1));
-
+  
   ctx1.fillRect(x, y, 1, 1);
 }
   
 
-//Display zoom level and allow zoom backout one level
 var zoomStack = [];
 var zoomLevel;
 var canZoomOut = document.getElementById('zoomOutButton');
@@ -160,7 +148,7 @@ const displayZoomLevel = () => {
 
 displayZoomLevel();
   
-const zoomOutButtonToggle = () => { 
+const zoomOutButtonToggle = () => {  
   if (length.zoomStack < 1) {
   	canZoomOut.disabled = true;
 	} else if (length.zoomStack >= 1) {
@@ -186,9 +174,9 @@ const mandelbrot = (canvas, xMin = -2, xMax = 1, yMax = 1, yMin = -1, maxIterati
   if (zoomStack.length < 1) { canZoomOut.disabled = true; }
   for (let x = 0; x < canvas.width; x++) {
     for (let y = 0; y < canvas.height; y++) {
-     
+      //var real = (((3 * x) / canvas.width) - 2); 								//<<This was the original equation for real
       var real = xMin + (x * ((xMax - xMin) / canvas.width)); 
-			
+			//var imaginary = ( -1 * (((2 * y) / canvas.height) - 1));	//<<This was the original equation for imaginary
   		var imaginary = yMax - (y * ((yMax - yMin) / canvas.height)); 
   		let realCurrent = 0;
   		let imaginaryCurrent = 0;
@@ -200,15 +188,13 @@ const mandelbrot = (canvas, xMin = -2, xMax = 1, yMax = 1, yMin = -1, maxIterati
         
         if (lengthSq > 4) {
           paintItBrot(x, y, i, lengthSq);
-         
           if(i > 990) { console.log(`I > 990: ${i}`);}
           if(lengthSq > 34) { console.log(`lengthSq > 34: ${lengthSq}`);}
           break;
         } else {
         realCurrent = realNext;
     		imaginaryCurrent = imaginaryNext;
-        if (i == (maxIterations - 1)) {  //trying janky shit
-          
+        if (i == (maxIterations - 1)) { 
           paintItPurple(x, y);
           break;
         }
@@ -229,6 +215,7 @@ const clearAndRedraw = (ctx, canvas) => {   //called by button to revert after z
   pixelPainter(canvas);
   mandelbrot(canvas);
 }
+
 //clickToDraw PROJECT
 const clickToDraw = () => {
 	ctx1.strokeStyle = "white";
@@ -239,7 +226,7 @@ const clickToDraw = () => {
 	let x = 0;
 	let y = 0;
 
-	const rect = myCanvas1.getBoundingClientRect();  
+	const rect = myCanvas1.getBoundingClientRect(); 
   
 
 	myCanvas1.addEventListener('mousedown', e => {
@@ -250,7 +237,7 @@ const clickToDraw = () => {
   
   
 	myCanvas1.addEventListener('mousemove', e => {
-  	if (isDrawing === true) {  //need to learn difference between == and ===
+  	if (isDrawing === true) { 
   	drawLine(ctx1, x, y, e.clientX - rect.left, e.clientY - rect.top);
     	x = e.clientX - rect.left;
     	y = e.clientY - rect.top;
@@ -259,10 +246,10 @@ const clickToDraw = () => {
 
 	window.addEventListener ('mouseup', e => {
   	if (isDrawing === true) {
-  	  drawLine(ctx1, x, y, e.clientX - rect.left, e.clientY - rect.top); /
-    	x = 0;
+  	  drawLine(ctx1, x, y, e.clientX - rect.left, e.clientY - rect.top); 
+    	x = 0; 
     	y = 0;
-    	isDrawing = false; 
+    	isDrawing = false;  //this makes mousemove stop drawing.
   	}
 	});
 
@@ -272,7 +259,7 @@ const clickToDraw = () => {
  	 ctx1.lineWidth = 1;
  	 ctx1.moveTo(x1, y1);
  	 ctx1.lineTo(x2, y2);
- 	 ctx1.stroke(); 
+ 	 ctx1.stroke();  
 	 ctx1.closePath();
 }
   
@@ -349,11 +336,13 @@ dragBox(myCanvas2);
 
   
 //Zoombox
+
+	//first, find the values of the edges of the dragged box (dragBoxLeft/Right/Top/Bottom are declared globally, and assigned in the mousemove event of dragBox().)  
 const mandelbrotZoomScale = (canvas, left, right, top, bottom) => {
 	zoomStack.push(zoomLevel); //push the previous level's boundaries to zoomStack so they can be retrieved on zoomOut.
   console.log(zoomStack.length); //checking to make sure the criteria is met for zoomOutButtonToggle() to work properly.  I don't understand why it's not working.
   console.log(zoomStack[(zoomStack.length - 1)]);
-  if (zoomStack.length >=1) { canZoomOut.disabled = false; } 
+  if (zoomStack.length >=1) { canZoomOut.disabled = false; }
   
   let xMinCurrent = xMin; 
   let xMaxCurrent = xMax;
