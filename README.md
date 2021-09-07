@@ -1,6 +1,6 @@
 # Trey's Mandelbrot Visualizer
 
-## Draws the mandelbrot
+## Draws the Mandelbrot Set
 This fractal browser draws a graphical representation of the mandelbrot number set, and paints the canvas pretty colors depending on pixel distance from the breakout points.
 
 ## Drag to Zoom
